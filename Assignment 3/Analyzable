@@ -1,0 +1,5 @@
+public interface Analyzable {
+    Double getAverage();
+    GradedActivity getHighest();
+    GradedActivity getLowest();
+}
