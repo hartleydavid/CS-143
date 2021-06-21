@@ -1,0 +1,20 @@
+/**
+ * @author David Hartley
+ *          CS& 143 Programming Assignment 4
+ *          Interfaces class
+ */
+//Interface for single Integer calculations
+interface IntCalculator
+{
+   int calculate(int number);
+}
+
+//Interface of single variable Double calculations
+interface DoubleCalculator {
+   double calculate(double x);
+}
+
+//Interface for two variable Double calculations
+interface TwoDoubleCalculator {
+   double calculate(double x, double y);
+}
