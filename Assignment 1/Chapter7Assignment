@@ -1,0 +1,136 @@
+/* Programming assignment #1. Part of programming Challenge 16 from Chapter 7 */
+package chapter7;
+
+/**
+ * @author David Hartley CS 143
+ */
+
+public class Chapter7Assignment {
+    //Private Instance Field for a 2D array
+    private int[][] array2d;
+
+    /**One Parameter constructor that takes a 2D array and copies a reference of the array
+     *
+     * @param array2d 2D array to set the Instance field to
+     */
+    public Chapter7Assignment(int[][] array2d) {
+        //Create new 2D array object to copy to, Set the rows length but not columns length, Jagged array case
+        int[][] copyArray2D = new int[array2d.length][];
+        for(int r = 0; r < array2d.length; r++){//for the rows of the array to copy
+            //Create a Single Dimension array to copy each row
+            int[] rowArray = new int[array2d[r].length];
+            for(int c = 0; c< array2d[r].length;c++){//for the columns of the array to copy
+                //copy the rows values in the row array
+                rowArray[c] = array2d[r][c];
+            }
+            //set the rows index to the row array
+            copyArray2D[r] = rowArray;
+        }
+        //Set Instance field to reference the copy of the array2D object
+        this.array2d = copyArray2D;
+    }
+
+    /** Method adds up all the values inside the 2D array and returns the total
+     *
+     * @return The total of all the values of the array added together
+     */
+    public int getTotal(){
+        int total = 0;//Int value to keep the running total
+        for (int[] rows : array2d) {//for each of the rows in the 2D array
+            for (int cols : rows) {//for each of the index of the row array
+                total += cols;//keep a running total of the indexes
+            }
+        }
+        return total;//return the running total
+    }
+
+    /** Method calculates the average of all the values in the 2D array
+     *
+     * @return The average of all values
+     */
+    public int getAverage(){
+        int total = 0;//Int variable for the running total of each index
+        int numberOfValues = 0;// Int variable for the number of indexes there are in the 2D array
+        for(int row = 0; row < array2d.length; row++){//for each of the rows
+            //get the total of the current row
+            total+= getRowTotal(row);
+            //Keep a running total for the length of each row to get the number of values in the 2D array
+            numberOfValues += array2d[row].length;
+        }
+        return total / numberOfValues;//return the average of values of the 2D array
+    }
+
+    /** Method calculates the total of a specified row and returns it
+     *
+     * @param row The row to calculate the total of
+     * @return The total of the specified row
+     */
+    public int getRowTotal(int row){
+        //if(row<0 || row >= array2d.length) throw new IndexOutOfBoundsException("Row value is not inbounds for the array");
+        int rowTotal = 0;//Integer variable to keep a running total for the specified row
+        for (int cols = 0; cols < array2d[row].length; cols++){//For each index in the specified row
+            rowTotal += array2d[row][cols];//add the running total
+        }
+        return rowTotal;//return the total of the row
+    }
+
+    /** Method adds all the values in a specified column and returns it
+     * Handles Jagged arrays and Invalid column input
+     * @param col The column to return the total of
+     * @return The total of the specified column, 0 if the Column input does not exist in the 2D array
+     */
+    public int getColumnTotal(int col){
+        int colTotal = 0;
+        for (int[] rows : array2d) {//for each row in the 2D array
+            if (col > rows.length - 1) continue;//If the array is Jagged and there is no Col value, skip iteration
+            colTotal += rows[col];//add col value to the total
+        }
+        return colTotal;//return the total
+    }
+
+    /** Method traces through an array at a specified row and returns the biggest number in that row
+     *
+     * @param row The row to find the highest value in
+     * @return THe highest value in the specified row
+     */
+    public int getHighestInRow(int row){
+        //if the row is of length 0, return 0
+        if(array2d[row].length == 0) return 0;
+        int currentMax = array2d[row][0];//The current max is the first index
+        for(int i = 0; i < array2d[row].length; i++){//For each column in the row
+            //Get the biggest value between the the current max value and the current iterations value
+            currentMax = Math.max(currentMax, array2d[row][i]);
+        }
+        return currentMax;//return the largest value
+    }
+
+    /** Method finds the lowest value in a specified column
+     *
+     * @param col The column to find the lowest value in
+     * @return The lowest value in the specified column
+     */
+    public int getLowestInColumn(int col){
+        //Find the first value at the specified column. Calls method to get the row that has the first column value
+        int lowestColumnValue = array2d[getFirstRowWithColumnIndex(col)][col];
+        for (int[] rows : array2d) {//for each row in the 2D array
+            if (col > rows.length - 1) continue;//If the array is Jagged and there is no Col value, skip iteration
+            //Get the smallest value between the current smallest and the current iteration of the column
+            lowestColumnValue = Math.min(lowestColumnValue, rows[col]);
+        }
+        return lowestColumnValue;//return the total
+    }
+
+    /** Method searches through the 2D array and finds the first row that has a specified column value
+     *
+     * @param column The column to find the Row value to
+     * @return The first Row to contain the column, -1 if no row is found
+     */
+    public int getFirstRowWithColumnIndex(int column){
+        for(int row = 0; row < array2d.length; row++){//For each row in the 2D array
+            //if the column is in the length of the row. Return the row that contains the column
+            if(column < array2d[row].length) return row;
+        }
+        //if no row has the column, return -1
+        return -1;
+    }
+}
