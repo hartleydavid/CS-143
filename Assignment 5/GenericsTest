@@ -1,0 +1,124 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/**
+ * @author David Hartley CS 143 Programming Assignment 5
+ */
+public class GenericsTest {
+    //Final Data-Field to provide a variable for the max random number bound and size of arraylists
+    private static final int LIMIT = 10;
+    //Data-Fields for each of the Arraylists used in testing so all testing methods can freely use arraylists
+    private static ArrayList<Integer> integerArrayList;
+    private static ArrayList<Double> doubleArrayList;
+    private static ArrayList<String> stringArrayList;
+
+
+    public static void main(String[] args) {
+        //Fill each of the arrayLists
+        integerArrayList = fillIntegerArrayList();//new ArrayList<>();
+        doubleArrayList = fillDoubleArrayList();//new ArrayList<>();
+        stringArrayList = new ArrayList<>(Arrays.asList("A", "BC", "Hello", "Testing", "Pineapple"));
+        //Print out all arrays
+        System.out.printf("Arrays used in Testing:" +
+                        "\nInteger -> %s" +
+                        "\nDouble -> %s" +
+                        "\nString -> %s\n",
+                Arrays.toString(integerArrayList.toArray()), Arrays.toString(doubleArrayList.toArray()),
+                Arrays.toString(stringArrayList.toArray()));
+        //Test each generic class
+        highLowTest();
+        numberAnalyzerTest();
+        permutationTest();
+    }
+
+    /** Method tests the HighLowElement Generic class by creating three Generic classes with Types Integer, Double and
+     * String. Method tests both the highestValue() and lowestValue() methods for each type. Types that are subclasses
+     * of Number get a bonus test for negative numbers
+     */
+    private static void highLowTest() {
+        //Create HighLowElement Objects for testing
+        HighLowElement<Integer> hlTest1 = new HighLowElement<>(integerArrayList);
+        HighLowElement<Double> hlTest2 = new HighLowElement<>(doubleArrayList);
+        HighLowElement<String> hlTest3 = new HighLowElement<>(stringArrayList);
+        System.out.println("Highest and Lowest Elements Test:");
+        //Print out the tests for Integer, Double, and string
+        System.out.printf("Integer Non-negative: Highest Value: %d -- Lowest Value: %d\n",
+                hlTest1.highestValue(), hlTest1.lowestValue());
+        hlTest1.add(-100);//Add negative value in Integer testing to show negative functionality
+        System.out.printf("Integer with added Negative Test: Highest Value: %d -- Lowest Value: %d\n",
+                hlTest1.highestValue(), hlTest1.lowestValue());
+
+        System.out.printf("Double Non-negative: Highest Value: %.1f -- Lowest Value: %.1f\n",
+                hlTest2.highestValue(), hlTest2.lowestValue());
+        hlTest2.add(-100.1);//Add negative value in Double testing to show negative functionality
+        System.out.printf("Double with added Negative Test: Highest Value: %.1f -- Lowest Value: %.1f\n",
+                hlTest2.highestValue(), hlTest2.lowestValue());
+        System.out.printf("String Test: Highest Value: %s -- Lowest Value: %s\n",
+                hlTest3.highestValue(), hlTest3.lowestValue());
+        System.out.println("-----------------------------------------------------------------");
+    }
+
+    /** Method tests the NumberAnalyzer Generic class. Tests types Integer and Double. For each type, the methods
+     * highestValue(), lowestValue(), totalValue(), and averageOfValues() are called
+     */
+    private static void numberAnalyzerTest() {
+        //Create NumberAnalyzer Objects for Integer and Double
+        NumberAnalyzer<Integer> numATest1 = new NumberAnalyzer<>(integerArrayList);
+        NumberAnalyzer<Double> numATest2 = new NumberAnalyzer<>(doubleArrayList);
+        //Print out all the Tests
+        System.out.println("Number Analyzer Test:");
+        //Integer Type Tests
+        System.out.printf("Integer Test: Highest Value: %d -- Lowest Value: %d" +
+                        "\nInteger Test: Total Value: %.1f -- Average of Values: %.1f\n", numATest1.highestValue(),
+                numATest1.lowestValue(),  numATest1.totalValue(), numATest1.averageOfValues());
+        //Double Type Tests
+        System.out.printf("Double Test: Highest Value: %.2f -- Lowest Value: %.2f" +
+                        "\nDouble Test: Total Value: %.2f -- Average of Values: %.2f\n", numATest2.highestValue(),
+                numATest2.lowestValue(), numATest2.totalValue(), numATest2.averageOfValues());
+        //Test format spacer
+        System.out.println("-----------------------------------------------------------------");
+    }
+
+    /** Method tests the RandomPermutation Generic class. Tests with type Integer, Double and String. Each Type calls
+     * the only method, shuffle() and outputs the shuffled arrayList
+     */
+    private static void permutationTest() {
+        System.out.println("Chapter 18, Programming Challenge 8. Generic Random Permutation");
+        //Create Generic Classes of RandomPermutation with types Integer, Double, and String
+        RandomPermutation<Integer> integerRP = new RandomPermutation<>();
+        RandomPermutation<Double> doubleRP = new RandomPermutation<>();
+        RandomPermutation<String> stringRP = new RandomPermutation<>();
+        //Print out all the shuffled ArrayLists
+        System.out.println("Integer Random Permutation Array -> "
+                + Arrays.toString( integerRP.shuffle(integerArrayList).toArray() ));
+        System.out.println("Double Random Permutation Array -> "
+                + Arrays.toString( doubleRP.shuffle(doubleArrayList).toArray() ));
+        System.out.println("String Random Permutation Array -> "
+                + Arrays.toString( stringRP.shuffle(stringArrayList).toArray() ));
+    }
+
+
+    /** Method Fills an Integer ArrayList of length 10 with random numbers ranging from 0-9
+     *
+     * @return An Integer ArrayList filled with random numbers
+     */
+    private static ArrayList<Integer> fillIntegerArrayList() {
+        ArrayList<Integer> argList = new ArrayList<>();//Instantiate new Arraylist
+        for (int i = 1; i <= LIMIT; i++) {//for the limit of values
+            argList.add((int) (Math.random() * LIMIT));//add random number in limit bound
+        }
+        return argList;//return the arrayList
+    }
+
+    /** Method Fills an Double ArrayList of length 10 with random numbers ranging from 0.0-9.9
+     *
+     * @return An Integer ArrayList filled with random numbers
+     */
+    private static ArrayList<Double> fillDoubleArrayList() {
+        ArrayList<Double> argList = new ArrayList<>();//Instantiate new Arraylist
+        for (double i = 1; i <= LIMIT; i++) {//for the limit of values
+            argList.add(Math.round((Math.random() * LIMIT) * 100.0) / 100.0);//add rounded random number in limit bound
+        }
+        return argList;//return arrayList
+    }
+}
