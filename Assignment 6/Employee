@@ -1,0 +1,61 @@
+/**
+ * @author David Hartley CS143 Programming Assignment #6
+ *         Challenge 3
+ */
+public class Employee {
+    //Private Data Fields
+    private String name;
+    private String idNum;
+
+    /**Two Argument Constructor that initializes the data fields
+     *
+     * @param name Name of employee
+     * @param idNum The ID of the employee
+     */
+    public Employee(String name, String idNum) {
+        this.name = name;
+        this.idNum = idNum;
+    }
+
+    /** Copy method for the Employee Object
+     *
+     * @return A copy of this Employee Object
+     */
+    public Employee copy(){
+        return new Employee(this.name,this.idNum);
+    }
+
+    /** Overridden hashCode method that modifies the hashcode to be after the data fields hashcode
+     *
+     * @return the hashcode of the string of the name and id combined
+     */
+    @Override
+    public int hashCode() {
+        return (name + idNum).hashCode();
+    }
+
+    /** Getter for the name field
+     *
+     * @return The name of this Employee
+     */
+    public String getName() {
+        return name;
+    }
+
+    /** Getter for the ID field
+     *
+     * @return The ID of this Employee
+     */
+    public String getID() {
+        return idNum;
+    }
+
+    /** toString Method that prints out the data of this object
+     *
+     * @return A string in the format of (Employee name) -- (Employee ID)
+     */
+    @Override
+    public String toString() {
+        return name + "--" + idNum;
+    }
+}
