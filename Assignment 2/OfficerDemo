@@ -1,0 +1,43 @@
+//This Class demonstrates a police officer examining parked cars and their respective paring meter payments to see
+//if the car was illegally parked or not.
+/**
+ @author David Hartley CS 143 Programming Assignment 2
+ Chapter 8 Programming Challenge 8
+ **/
+
+public class OfficerDemo {
+
+    public static void main(String[] args){
+        //Create a Police Officer
+        PoliceOfficer officer = new PoliceOfficer("Paul Blart", "17267");
+        //Create a line of parked cars to examine
+        ParkedCar[] lineOfCars = {
+                new ParkedCar("Ford", "Mustang", "Red", "BQF1762", 101),
+                new ParkedCar("Toyota", "Carola LE", "Gold", "ABCE34", 560),
+                new ParkedCar("Honda", "Accord", "Silver", "OLDSC12", 30),
+                new ParkedCar("Telsa", "Model 1", "Black", "123459", 300),
+                new ParkedCar("Chevy", "Camaro", "Blue", "BQF1761", 180)
+        };
+        //Only one payment option for ever car -- For easier testing purposes
+        ParkingMeter meter = new ParkingMeter(4);
+        /*ParkingMeter[] lineOfMeters = { //Individual Parking meters for each car
+                new ParkingMeter(1),
+                new ParkingMeter(8),
+                new ParkingMeter(4),
+                new ParkingMeter(3),
+                new ParkingMeter(9)
+        };*/
+        //For each Parked car
+        for (ParkedCar lineOfCar : lineOfCars) {
+            //Examine Car to see if it was illegally parked
+            if (officer.examineParkedCar(lineOfCar, meter)) {
+                //If Illegally parked, create a parking ticket with the car, officer, and the time over payment
+                ParkingTicket ticket = new ParkingTicket(lineOfCar, officer,
+                        lineOfCar.getMinutesParked() - meter.getMinutesPurchased());
+                //Print out the parking ticket
+                System.out.println(ticket);
+            }
+        }
+
+    }
+}
