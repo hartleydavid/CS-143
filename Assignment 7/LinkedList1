@@ -1,0 +1,431 @@
+/**
+ * @author David Hartley CS 143 - Programming Assignment 7
+ */
+
+class LinkedList1 {
+
+    /**
+     * The Node class stores a list element
+     * and a reference to the next node.
+     */
+    private class Node {
+        String value;
+        Node next;
+
+        /**
+         * Constructor.
+         *
+         * @param val The element to store in the node.
+         * @param n   The reference to the successor node.
+         */
+        Node(String val, Node n) {
+            value = val;
+            next = n;
+        }
+
+        /**
+         * Constructor.
+         *
+         * @param val The element to store in the node.
+         */
+        Node(String val) {
+            // Call the other (sister) constructor.
+            this(val, null);
+        }
+    }
+
+    private Node first;  // list head
+    private Node last;   // last element in list
+
+    /**
+     * Constructor.
+     */
+    public LinkedList1() {
+        first = null;
+        last = null;
+    }
+
+    //Main method that tests sort and reverse methods
+    public static void main(String[] args) {
+        LinkedList1 ll = new LinkedList1();
+        ll.add("1");
+        ll.add("5");
+        ll.add("2");
+        ll.add("9");
+        ll.add("6");
+        ll.add("3");
+        ll.add("4");
+        ll.add("7");
+        ll.add("8");
+        System.out.println("The members of the list are:");
+        System.out.println(ll);
+        System.out.println("The members of the sorted list are:");
+        ll.sort();
+        System.out.println(ll);
+        ll.reverse();
+        System.out.println("The members of the reversed list are:");
+        System.out.println(ll);
+
+
+    }
+
+    //Start of Code written by David Hartley:
+
+    /**
+     * Method sorts this first node in a descending order. Updates last element as well
+     * Sorts based on lexicographic values of each Value data field in the nodes
+     * Causing numbers to sort incorrectly if >= 10 or negative.
+     */
+    public void sort() {
+        //If the first node is not null
+        if(first != null)
+        //Sort this linkedList in a descending order, empty list will get caught be exit case in recursive method
+        first = descendingSort(first);
+    }
+
+    /**
+     * Method that recursively sorts the specified node in a descending order
+     * and returns the sorted node
+     *
+     * @param head This node link to be sorted
+     * @return A sorted LinkedList in a descending order
+     */
+    private Node descendingSort(Node head) {
+        //If the next node is null, return this node as it is the last in the list
+        if (head.next == null) return head;
+        //Divide link in half
+        Node middleNode = getMiddleNode(head);
+        //The right half is from the next node from the middle to the null reference
+        Node rightHalf = middleNode.next;
+        //Cut off the left half of the list from the right, stackoverflow if not done
+        middleNode.next = null;
+        //Sort the left and the right splits of the list
+        Node leftList = descendingSort(head);
+        Node rightList = descendingSort(rightHalf);
+        //Sort the left and the right half of the linkedList
+        return sort(leftList, rightList);
+    }
+
+    /**
+     * Method sorts two nodes in a decreasing order.
+     * Splits all the links down to pairs and will compare each pair.
+     * Working its way up to the full node linkedList.
+     *
+     * @param left  The left node in the LinkedList
+     * @param right The right node in the LinkedList
+     * @return A sorted LinkedList in either left -> right or right -> left
+     */
+    private Node sort(Node left, Node right) {
+        //If the current left node is null, return the right node to be the greater value.
+        if (left == null) return right;
+        //If the current right node is null, return the left node to be the greater value
+        if (right == null) return left;
+        //Node variable to be the one to return for sorting, either left or right, this node will be returned
+        Node returnNode;
+        //if the right node's value is greater than the left node's value
+        if (left.value.compareTo(right.value) < 0) {
+            //The order of sublist would be right -> left
+            returnNode = right;
+            //The last element would be the next value of the iteration, last traversal is skipped by exit case
+            last = left.next;
+            //For the next link, sort the next element right node link to the current left link
+            right.next = sort(left, right.next);
+        } else {//If the right node's value is lower than the left
+            //The order of sublist would be left -> right
+            returnNode = left;
+            //The last element would be the next value of the iteration, last traversal is skipped by exit case
+            last = right.next;
+            //For the next link, sort the next element left node link to the current right link
+            left.next = sort(left.next, right);
+        }
+        return returnNode;//return the sorted list
+    }
+
+    /**
+     * Method that gets the center node in a linkedList specified
+     * Returns the center node of an odd number linked list
+     * The node to the left of the "center" of an even sized list
+     *
+     * @param head The LinkedList to find the center node of
+     * @return The center node
+     */
+    private Node getMiddleNode(Node head) {
+        //If the node is the only element, it is the middle node
+        if (head.next == null) return head;
+        int middleIndex = size(head);//Create a variable for the size of this parameters size of LinkedList1
+        //Modify the index to be the middle index. If list is even sized move the "middle" node back by one,
+        //If the list was odd, the integer division index is true to the middle
+        middleIndex = (middleIndex % 2 == 0 ? -1 : 0) + (middleIndex / 2);
+        //New node reference to be the middle node to return, set to null temporarily
+        Node middleNode = null;
+        //For the elements of the linkedList to the middle link in the list
+        for (Node itr = head; middleIndex-- >= 0; itr = itr.next) {
+            middleNode = itr;//Set the middle node to the current node
+        }
+        return middleNode;//return the middle node
+    }
+
+    /**
+     * Public method that recursively reverses the links in the classes first node
+     * Reassigns the last node reference to be correct
+     */
+    public void reverse() {
+        //If the first element is not null
+        if(first != null) {
+            //Reverse the linkedList
+            first = reverseLinkedList(first);
+            //Get the last Node and reassign the Data-Field to be the correct node
+            Node temp = first;//Temp Node Reference to traverse through the linkedList
+            while (temp.next != null) {//While the next element is not null
+                //Go to the next node and reference the last node field to the node,
+                //when loop ends it will reference the last element
+                temp = temp.next;
+                last = temp;
+            }
+        }
+        first.next.next = first.next.next.next.next;
+    }
+
+    /**
+     * Private method that returns a node that is in the reversed order before the method call.
+     * Does so by splitting all the links in half and then swapping each node individually moving left to right
+     *
+     * @param head The node to be reversed
+     * @return A reversed linkedList node
+     */
+    private Node reverseLinkedList(Node head) {
+        //If the next node is null, return this node as it is the last in the list
+        if (head.next == null) return head;
+        //Divide link in half
+        Node middleNode = getMiddleNode(head);
+        Node rightHalf = middleNode.next;
+        //Cut off the right half of the list from the left, stackoverflow if not done
+        middleNode.next = null;
+        //Get to the individual nodes in the list by cutting them in half
+        Node leftList = reverseLinkedList(head);
+        Node rightList = reverseLinkedList(rightHalf);
+        //Swap or reverse the left and the right half of the linkedList nodes
+        return reverse(leftList, rightList);
+    }
+
+    /**
+     * Method reverses the order of two nodes recursively.
+     * Sets the right node as the head and the left node as the .next reference.
+     * Left - (.next) > right is now: Right - (.next) > left
+     * @param leftNode  The node to the left to be swapped
+     * @param rightNode The node to the right to be swapped
+     * @return A new Node with reversed links
+     */
+    private Node reverse(Node leftNode, Node rightNode) {
+        //If the right node is the end of the sublist
+        //Return the left node as that is the ending node with null as .next
+        if (rightNode == null) return leftNode;
+        //Recur until the end of the right nodes is met. Calls back and reverses the list
+        rightNode.next = reverse(leftNode, rightNode.next);
+        return rightNode;
+    }
+
+    /**
+     * Private method that finds the size of a sub LinkList
+     *
+     * @param subList: The node to find the size of
+     * @return The size of the LinkedList
+     */
+    private int size(Node subList) {
+        int count = 0;
+        Node p = subList;
+        while (p != null) {
+            // There is an element at p
+            count++;
+            p = p.next;
+        }
+        return count;
+    }
+
+    public String pop (){
+
+if(first == null) return "";
+
+String data = first.value;
+
+first = first.next;
+
+return data;
+
+    }
+    //End of Code written by David Hartley
+
+    /**
+     * The isEmpty method checks to see
+     * if the list is empty.
+     *
+     * @return true if list is empty,
+     * false otherwise.
+     */
+    public boolean isEmpty() {
+        return first == null;
+    }
+
+    /**
+     * The size method returns the length of the list.
+     *
+     * @return The number of elements in the list.
+     */
+    public int size() {
+        int count = 0;
+        Node p = first;
+        while (p != null) {
+            // There is an element at p
+            count++;
+            p = p.next;
+        }
+        return count;
+    }
+
+    /**
+     * The add method adds an element to
+     * the end of the list.
+     *
+     * @param e The value to add to the
+     *          end of the list.
+     */
+    public void add(String e) {
+        if (isEmpty()) {
+            first = new Node(e);
+            last = first;
+        } else {
+            // Add to end of existing list
+            last.next = new Node(e);
+            last = last.next;
+        }
+    }
+
+    /**
+     * The add method adds an element at a position.
+     *
+     * @param e     The element to add to the list.
+     * @param index The position at which to add
+     *              the element.
+     * @throws IndexOutOfBoundsException When
+     *                                   index is out of bounds.
+     */
+    public void add(int index, String e) {
+        if (index < 0 || index > size()) {
+            String message = String.valueOf(index);
+            throw new IndexOutOfBoundsException(message);
+        }
+        // Index is at least 0
+        if (index == 0) {
+            // New element goes at beginning
+            first = new Node(e, first);
+            if (last == null)
+                last = first;
+            return;
+        }
+        // Set a reference predecessor to point to the node that
+        // will be the predecessor of the new node
+        Node pred = first;
+        for (int k = 1; k <= index - 1; k++) {
+            pred = pred.next;
+        }
+        // Splice in a node containing the new element
+        pred.next = new Node(e, pred.next);
+        // Is there a new last element ?
+        if (pred.next.next == null)
+            last = pred.next;
+    }
+
+    /**
+     * The toString method computes the string
+     * representation of the list.
+     *
+     * @return The string form of the list.
+     */
+    public String toString() {
+        StringBuilder strBuilder = new StringBuilder();
+        // Use p to walk down the linked list
+        Node p = first;
+        while (p != null) {
+            strBuilder.append(p.value).append(" ");
+            p = p.next;
+        }
+        return strBuilder.toString();
+    }
+
+    /**
+     * The remove method removes the element at an index.
+     *
+     * @param index The index of the element to remove.
+     * @return The element removed.
+     * @throws IndexOutOfBoundsException When index is
+     *                                   out of bounds.
+     */
+    public String remove(int index) {
+        if (index < 0 || index >= size()) {
+            String message = String.valueOf(index);
+            throw new IndexOutOfBoundsException(message);
+        }
+        String element;  // The element to return
+        if (index == 0) {
+            // Removal of first item in the list
+            element = first.value;
+            first = first.next;
+            if (first == null)
+                last = null;
+        } else {
+            // To remove an element other than the first,
+            // find the predecessor of the element to
+            // be removed.
+            Node pred = first;
+
+            // Move predecessor forward index - 1 times
+            for (int k = 1; k <= index - 1; k++)
+                pred = pred.next;
+            // Store the value to return
+            element = pred.next.value;
+            // Route link around the node to be removed
+            pred.next = pred.next.next;
+            // Check if predecessor is now last
+            if (pred.next == null)
+                last = pred;
+        }
+        return element;
+    }
+
+    /**
+     * The remove method removes an element.
+     *
+     * @param element The element to remove.
+     * @return true if the remove succeeded,
+     * false otherwise.
+     */
+    public boolean remove(String element) {
+        if (isEmpty())
+            return false;
+
+        if (element.equals(first.value)) {
+            // Removal of first item in the list
+            first = first.next;
+            if (first == null)
+                last = null;
+            return true;
+        }
+        // Find the predecessor of the element to remove
+        Node pred = first;
+        while (pred.next != null &&
+                !pred.next.value.equals(element)) {
+            pred = pred.next;
+        }
+        // predecessor.next == null OR predecessor.next.value is element
+        if (pred.next == null)
+            return false;
+        // predecessor.next.value  is element
+        pred.next = pred.next.next;
+        // Check if predecessor is now last
+        if (pred.next == null)
+            last = pred;
+
+        return true;
+    }
+
+}
